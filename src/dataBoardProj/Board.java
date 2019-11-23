@@ -58,7 +58,6 @@ public class Board<E extends Data> implements DataBoard<E> {
 
 	@Override
 	public void removeFriend(String category, String passw, String friend) throws WrongPasswordException, FriendNotExistsException{
-		// TODO Auto-generated method stub
 		if(passw == this.password)
 			throw new WrongPasswordException("Password sbagliata.");
 		if(this.friends.contains(friend))
@@ -93,7 +92,7 @@ public class Board<E extends Data> implements DataBoard<E> {
 		if(this.recordData.contains(dato))
 			throw new AlreadyPresentException();
 	    boolean res = this.recordData.add(dato);    //passati tutti i controlli aggiungo il dato
-		return res;
+		return res;									//restituisco l'esito dell'inserimento
 		
 	}
 
@@ -103,7 +102,7 @@ public class Board<E extends Data> implements DataBoard<E> {
 		 * @requires: passw != null && dato != null && this.password == passw && dato is present in this.recordData
 		 * 			 
 		 * @throw:
-		 * 			  se passw == null  || dato == null 			lancia NullPointerException(UNCHECKED)
+		 * 			   se passw == null  || dato == null 			lancia NullPointerException(UNCHECKED)
 		 * 			  se passw != this.password 					lancia WrongPasswordException(CHECKED)
 		 * 			  se dato is not in recordData					lancia DataNotPresentException(CHECKED)	 
 		 */

@@ -51,5 +51,9 @@ public class MyData implements Data {
 		// TODO Auto-generated method stub
         this.likes++;
 	}
+	
+	public Object clone() throws CloneNotSupportedException {
+	    return super.clone();
+	}
 
 }
