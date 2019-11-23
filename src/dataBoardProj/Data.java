@@ -1,6 +1,9 @@
 package dataBoardProj;
 
-public interface Data extends Cloneable {
+import java.util.ArrayList;
+import java.util.List;
+
+public interface Data<E extends Comparable> extends Cloneable {
 	/* @overview: 
 	 *  dato generico che ha un metodo display() e la categoria del dato
 	 * 
@@ -19,5 +22,8 @@ public interface Data extends Cloneable {
     public void addLike();
     
     //ALTRI METODI DA AGGIUNGERE QUI: 
+    
+    //crea una copia di una lista di Stringhe
+    //public List<String> cloneList(List<String> toCopyList) throws NullPointerException;
 
 }

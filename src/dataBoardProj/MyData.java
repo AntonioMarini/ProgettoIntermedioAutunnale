@@ -4,15 +4,21 @@ import java.util.ArrayList;
 
 
 
-public class MyData implements Data {
+public class MyData<E> implements Data {
+	/*
+	 * IR: c.data != null && c.categoria != null && c.likes >= 0  
+	 * 
+	 */
 	
 	
-	private String data; //
+	private E data; //contenuto
 	private String categoria; //categoria del dato
 	private int likes; //numero di likes
-	private List<String> addedLikes; //array in cui vedo chi ha già messo like
+	private List<String> addedLikes; //array che contiene gli amici che hanno messo like 
 	
-	public MyData(String text, String category) throws IllegalArgumentException {
+	
+	//Costruttore per i dati testuali
+	public MyData (String text, String category) throws IllegalArgumentException {
 		/*
 		 * @requires: text != null && category != null
 		 * @throw   : se text == null or category == null lancia IllegalArgumentException(Unchecked)
@@ -21,7 +27,7 @@ public class MyData implements Data {
 		 */
 		if( text != null && category != null) 
 		{
-		this.data = text;
+		this.data = (E) text;
 		this.addedLikes = new ArrayList<String>(0);
 		this.categoria = category;
 		this.likes = 0;
@@ -29,6 +35,21 @@ public class MyData implements Data {
 		else
 			throw new IllegalArgumentException();
 	}
+	
+	
+	
+	public MyData(MyData<E> copy){//////COPIA//////////////////
+		/* Metodo costrutttore per creare una shallow copy dell'oggetto
+		 * @effects : crea una shallow copy dell'oggetto 
+		 */
+		
+		copy.data = this.data;
+		copy.addedLikes = cloneList(this.addedLikes);
+		copy.categoria = this.getCategory();
+		copy.likes = this.likes;
+	}
+	
+	
 
 	@Override
 	public void display() {
@@ -41,7 +62,6 @@ public class MyData implements Data {
 
 	@Override
 	public String getCategory() {
-		//TODO: METODO CLONE()
        String tmp = this.categoria;
        return tmp;
 	}
@@ -51,9 +71,25 @@ public class MyData implements Data {
 		// TODO Auto-generated method stub
         this.likes++;
 	}
-	
-	public Object clone() throws CloneNotSupportedException {
-	    return super.clone();
+
+
+	//metodo per clonare la lista di stringhe
+	public List<String> cloneList(List<String> toCopyList) throws NullPointerException{
+		/*
+		 * @requires: toCopyList != null
+		 * @throw:	se toCopyList == null lancio NullPointerException
+		 * @effects:	restituisco una copia della lista
+		 */
+		if(toCopyList != null) {
+			List<String> copy = new ArrayList<String>(toCopyList.size()); 
+			for(String friend : toCopyList) copy.add(friend); //copio il contenuto in copy
+			return copy; 	//restituisco la copia dell'oggetto.
+		}
+		
+		else throw new NullPointerException("La lista da copiare è null");
 	}
+
+
+
 
 }
