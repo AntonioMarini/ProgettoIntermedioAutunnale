@@ -28,10 +28,11 @@ public interface DataBoard<E extends Data> {
 	
 	// Rimuove il dato dalla bacheca
 	// se vengono rispettati i controlli di identità
-	public E remove(String passw, E dato) throws NullPointerException, WrongPasswordException;
+	public E remove(String passw, E dato) throws NullPointerException, WrongPasswordException, DataNotPresentException, CloneNotSupportedException;
+	
 	// Crea la lista dei dati in bacheca su una determinata categoria
 	// se vengono rispettati i controlli di identità
-	public List<E> getDataCategory(String passw, String category) throws NullPointerException, WrongPasswordException;
+	public List<E> getDataCategory(String passw, String category) throws NullPointerException, WrongPasswordException, CategoryNotPresentException;
 
 	
 

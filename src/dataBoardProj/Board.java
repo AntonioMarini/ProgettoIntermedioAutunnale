@@ -3,6 +3,7 @@ package dataBoardProj;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collections;
 import dataBoardProjExceptions.*;
 
@@ -156,21 +157,49 @@ public class Board<E extends MyData> implements DataBoard<E> {
 			throw new DataNotPresentException("Dato non presente in bacheca.");
 		else
 		{
-			return (E) dato.clone();
+			E cpy = (E) recordData.elementAt(recordData.indexOf(dato)).clone();
+			return cpy;
 		}
 		
 	}
 
+
 	@Override
-	public E remove(String passw, E dato) {
-		// TODO Auto-generated method stub
-		return null;
+	public E remove(String passw, E dato) throws NullPointerException, WrongPasswordException, DataNotPresentException, CloneNotSupportedException{
+		/*
+		 * @requires: passw != null && dato != null && this.password == passw && dato is present in this.recordData
+		 * 			 
+		 * @throw:
+		 * 			   se passw == null  || dato == null 			lancia NullPointerException(UNCHECKED)
+		 * 			  se passw != this.password 					lancia WrongPasswordException(CHECKED)
+		 * 			  se dato is not in recordData					lancia DataNotPresentException(CHECKED)	 
+		 */
+		if (passw == null || dato == null)
+			throw new NullPointerException();
+		if(passw != this.password)
+			throw new WrongPasswordException("Password sbagliata.");
+		if(!recordData.contains(dato))
+			throw new DataNotPresentException("Dato non presente in bacheca.");
+		E cpy = this.get(passw, dato);   						//creo una copia dell'elemento
+		recordData.remove(recordData.indexOf(dato));			//lo rimuovo
+		return cpy;												//restituisco l'elemento rimosso
 	}
 
 	@Override
-	public List<E> getDataCategory(String passw, String category) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<E> getDataCategory(String passw, String category) throws NullPointerException, WrongPasswordException, CategoryNotPresentException {
+		if (passw == null || category == null)
+			throw new NullPointerException();
+		if(passw != this.password)
+			throw new WrongPasswordException("Password sbagliata.");
+		if(!this.categories.contains(category))
+			throw new CategoryNotPresentException();
+		List<E> res = new ArrayList<E>();
+		for(E dato : recordData)
+		{
+			if(dato.getCategory() == category)
+				res.add(dato);
+		}
+		return res;
 	}
 
 	@Override
