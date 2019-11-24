@@ -2,13 +2,11 @@ package dataBoardProj;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.Vector;
 import java.util.Collections;
 import dataBoardProjExceptions.*;
 
-public class Board<E extends Data> implements DataBoard<E> {
+public class Board<E extends MyData> implements DataBoard<E> {
 	/*
 	 * Overview:
 	 * 
@@ -56,7 +54,7 @@ public class Board<E extends Data> implements DataBoard<E> {
 	public void removeCategory(String category, String passw) throws WrongPasswordException {
 		// TODO Auto-generated method stub
 		if(passw == this.password)
-			categories.remove(category);
+			categories.remove(categories.indexOf(category));
 		else throw new WrongPasswordException("Password sbagliata.");
 
 	}
@@ -139,8 +137,9 @@ public class Board<E extends Data> implements DataBoard<E> {
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public E get(String passw, E dato) throws NullPointerException, WrongPasswordException, DataNotPresentException {
+	public E get(String passw, E dato) throws NullPointerException, WrongPasswordException, DataNotPresentException, CloneNotSupportedException {
 		/*
 		 * @requires: passw != null && dato != null && this.password == passw && dato is present in this.recordData
 		 * 			 
@@ -157,10 +156,8 @@ public class Board<E extends Data> implements DataBoard<E> {
 			throw new DataNotPresentException("Dato non presente in bacheca.");
 		else
 		{
-			int i = recordData.indexOf(dato);
-			// TODO: IMPLEMENTARE METODO CLONE() copyData = (E) recordData.elementAt(i)
+			return (E) dato.clone();
 		}
-		return null;
 		
 	}
 
@@ -194,6 +191,11 @@ public class Board<E extends Data> implements DataBoard<E> {
 		return null;
 	}
 
-	
+	/**
+	 * @return the username
+	 */
+	public String getUsername() {
+		return username;
+	}
 
 }

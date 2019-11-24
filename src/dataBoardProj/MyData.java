@@ -4,21 +4,21 @@ import java.util.ArrayList;
 
 
 
-public class MyData<E> implements Data {
+public class MyData implements Data, Cloneable{
 	/*
 	 * IR: c.data != null && c.categoria != null && c.likes >= 0  
 	 * 
 	 */
 	
 	
-	private E data; //contenuto
+	private String data; //contenuto
 	private String categoria; //categoria del dato
 	private int likes; //numero di likes
 	private List<String> addedLikes; //array che contiene gli amici che hanno messo like 
 	
 	
 	//Costruttore 
-	public MyData (E content, String category) throws IllegalArgumentException {
+	public MyData (String content, String category) throws IllegalArgumentException {
 		/*
 		 * @requires: text != null && category != null
 		 * @throw   : se text == null or category == null lancia IllegalArgumentException(Unchecked)
@@ -38,7 +38,7 @@ public class MyData<E> implements Data {
 	
 	
 	
-	public MyData(MyData<E> copy){//////COPIA//////////////////
+	public MyData(MyData copy){//////COPIA//////////////////
 		/* Metodo costrutttore per creare una shallow copy dell'oggetto
 		 * @effects : crea una shallow copy dell'oggetto 
 		 */
@@ -71,6 +71,7 @@ public class MyData<E> implements Data {
 		// TODO Auto-generated method stub
         this.likes++;
 	}
+	
 
 
 	//metodo per clonare la lista di stringhe
@@ -90,6 +91,10 @@ public class MyData<E> implements Data {
 	}
 
 
-
+	public Object clone() throws
+    CloneNotSupportedException 
+	{ 
+		return super.clone(); 
+	} 
 
 }

@@ -1,9 +1,8 @@
 package dataBoardProj;
 
-import java.util.ArrayList;
-import java.util.List;
 
-public interface Data<E extends Comparable> extends Cloneable {
+
+public interface Data {
 	/* @overview: 
 	 *  dato generico che ha un metodo display() e la categoria del dato
 	 * 

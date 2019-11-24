@@ -4,7 +4,7 @@ import java.util.Iterator;
 import dataBoardProjExceptions.*;
 import java.util.List;
 
-public interface DataBoard<E extends Data<?>> {
+public interface DataBoard<E extends Data> {
 	
 	// Crea l’identità una categoria di dati
 	public void createCategory(String category, String passw) throws WrongPasswordException;
@@ -24,7 +24,7 @@ public interface DataBoard<E extends Data<?>> {
 	
 	// Ottiene una copia del del dato in bacheca
 	// se vengono rispettati i controlli di identità
-	public E get(String passw, E dato) throws NullPointerException, WrongPasswordException, DataNotPresentException;
+	public E get(String passw, E dato) throws NullPointerException, WrongPasswordException, DataNotPresentException, CloneNotSupportedException;
 	
 	// Rimuove il dato dalla bacheca
 	// se vengono rispettati i controlli di identità
