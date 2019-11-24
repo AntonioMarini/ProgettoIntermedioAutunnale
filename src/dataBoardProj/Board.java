@@ -12,24 +12,43 @@ public class Board<E extends Data> implements DataBoard<E> {
 	/*
 	 * Overview:
 	 * 
-	 * IR: recordData != null && categories != null && friends != null && password != null
+	 * IR: username != null && recordData != null && categories != null && friends != null 
+	 * 	   && password != null
 	 * 	   && categories does not contains duplicates && friends does not contains duplicates
 	 * 	   && friends is ordered 
 	 *     
 	 */
 	
-	private Vector<E> recordData;
-	private Vector<String> categories;
-	private Vector<String> friends;
+	private String username;
 	private String password;
-
+	private Vector<E> recordData;
+	private Vector<Category> categories;
+	private Vector<String> friends;
 	
+	//Costruttore, crea un'istanza della classe Databoard assegnando username e password
+	public Board(String user, String passw) throws NullPointerException{
+		/*
+		 * @requires: user != null && passw != null
+		 * @throws:	  se user == null || passw == null lancia NullPointerException (UNCHECKED)
+		 * @effects:  
+		 */
+		if(user != null && passw != null)
+		{
+			this.username = user;
+			this.password = passw;
+			recordData= new Vector<E>();
+			friends = new Vector<String>();
+			categories = new Vector<Category>();
+		}
+		else throw new NullPointerException("User e/o Password sono null");
+		
+	}
 
 	@Override
 	public void createCategory(String category, String passw) throws WrongPasswordException {
 		// TODO Auto-generated method stub
 		if(passw == this.password)
-			categories.add(category);
+			categories.add(new Category(category));
 		else throw new WrongPasswordException("Password sbagliata.");
 	}
 
@@ -50,7 +69,12 @@ public class Board<E extends Data> implements DataBoard<E> {
 		if(this.friends.contains(friend))
 			throw new DuplicateFriendException("L'amico è già presente nella lista.");
 		else {
-			this.friends.add(friend);			//inserisce l'elemento in coda
+			this.friends.add(friend); //inserisce l'elemento in coda
+			for(int i = 0; i < this.categories.size(); i++)
+			{
+				if(categories.get(i).getCategoryName() == category)
+					categories.get(i).allowFriend(friend);          //aggiungo l'amico alla categoria
+			}
 			Collections.sort(this.friends);  	//riordina il vettore cosi da mantenere l'invariante
 		}
 
@@ -58,12 +82,31 @@ public class Board<E extends Data> implements DataBoard<E> {
 
 	@Override
 	public void removeFriend(String category, String passw, String friend) throws WrongPasswordException, FriendNotExistsException{
+		/*
+		 * @requires: passw != null && friend != null && category != null && this.password == passw
+		 * 			  && categoria is in this.categories && friend is in this.friends
+		 * @throw:
+		 * 			  se passw == null || categoria == null || friend == null lancia NullPointerException(UNCHECKED)
+		 * 			  se passw != this.password 							lancia WrongPasswordException(CHECKED)
+		 * 			  se categoria is not in this.categories				lancia CategoryNotPresentException(CHECKED)
+		 * 			  se friend is not in this.friends						lancia FriendNotExistsException(CHECKED)
+		 * @modifies:
+		 * 			  this_post.recordData = this_pre.recordData U {dato}
+		 * @effects:
+		 * 			  aggiunge dato in this.recordData e restituisce 
+		 * 			  true se l'inserimento è andato a buon fine, false altrimenti
+		 */
 		if(passw == this.password)
 			throw new WrongPasswordException("Password sbagliata.");
 		if(this.friends.contains(friend))
 			throw new FriendNotExistsException("L'amico da rimuovere non è presente nella lista.");
 		else {
 			this.friends.removeElement(friend);		//rimuove friend mantenendo l'ordine
+			for(int i = 0; i < this.categories.size(); i++)
+			{
+				if(categories.get(i).getCategoryName() == category)
+					categories.get(i).remove(friend);          //aggiungo l'amico alla categoria
+			}
 		}
 	}
 

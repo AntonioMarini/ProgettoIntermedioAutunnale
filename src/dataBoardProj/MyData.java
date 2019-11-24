@@ -17,17 +17,17 @@ public class MyData<E> implements Data {
 	private List<String> addedLikes; //array che contiene gli amici che hanno messo like 
 	
 	
-	//Costruttore per i dati testuali
-	public MyData (String text, String category) throws IllegalArgumentException {
+	//Costruttore 
+	public MyData (E content, String category) throws IllegalArgumentException {
 		/*
 		 * @requires: text != null && category != null
 		 * @throw   : se text == null or category == null lancia IllegalArgumentException(Unchecked)
 		 * @modifies: this
 		 * @effects : create a new Object 
 		 */
-		if( text != null && category != null) 
+		if( content != null && category != null) 
 		{
-		this.data = (E) text;
+		this.data =  content;
 		this.addedLikes = new ArrayList<String>(0);
 		this.categoria = category;
 		this.likes = 0;
@@ -57,7 +57,7 @@ public class MyData<E> implements Data {
 		 * @requires: ogg != null 
 		 */
 		String li = Integer.toString(likes);
-        System.out.println("\nDato : "+ data +"\nLikes: "+ li +"\nCategory: " + categoria );
+        System.out.println("\nDato : "+ data.toString() +"\nLikes: "+ li +"\nCategory: " + categoria );
 	}
 
 	@Override

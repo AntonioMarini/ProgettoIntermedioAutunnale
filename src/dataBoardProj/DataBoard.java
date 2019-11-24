@@ -4,7 +4,7 @@ import java.util.Iterator;
 import dataBoardProjExceptions.*;
 import java.util.List;
 
-public interface DataBoard<E extends Data> {
+public interface DataBoard<E extends Data<?>> {
 	
 	// Crea l’identità una categoria di dati
 	public void createCategory(String category, String passw) throws WrongPasswordException;
@@ -28,24 +28,24 @@ public interface DataBoard<E extends Data> {
 	
 	// Rimuove il dato dalla bacheca
 	// se vengono rispettati i controlli di identità
-	public E remove(String passw, E dato);
+	public E remove(String passw, E dato) throws NullPointerException, WrongPasswordException;
 	// Crea la lista dei dati in bacheca su una determinata categoria
 	// se vengono rispettati i controlli di identità
-	public List<E> getDataCategory(String passw, String category);
+	public List<E> getDataCategory(String passw, String category) throws NullPointerException, WrongPasswordException;
 
 	
 
 	// restituisce un iteratore (senza remove) che genera tutti i dati in
 	// bacheca ordinati rispetto al numero di like.
-	public Iterator<E> getIterator(String passw);
+	public Iterator<E> getIterator(String passw) throws NullPointerException, WrongPasswordException;
 	
 	// Aggiunge un like a un dato
-	public void insertLike(String friend, E data) throws AlreadyLikedException;
+	public void insertLike(String friend, E data) throws NullPointerException, WrongPasswordException, AlreadyLikedException;
 	
 	// Legge un dato condiviso
 	// restituisce un iteratore (senza remove) che genera tutti i dati in
 	// bacheca condivisi.
-	public Iterator<E> getFriendIterator(String friend);
+	public Iterator<E> getFriendIterator(String friend) throws NullPointerException;
 	
 
 	// ... altre operazione da definire a scelta
