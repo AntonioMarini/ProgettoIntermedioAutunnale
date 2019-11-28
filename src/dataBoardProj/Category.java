@@ -3,7 +3,7 @@ import java.util.Collections;
 import java.util.Vector;
 
 
-public class Category {
+public class Category implements Cloneable{
 	/*
 	 *  @overview: classe per mantere le categorie relative a una Databoard 
 	 *  
@@ -34,9 +34,21 @@ public class Category {
 		Collections.sort(allowedFriends);
 	}
 	
+	@SuppressWarnings("unchecked")
+	public Vector<String> getAllowedFriends()
+	{
+		return (Vector<String>) this.allowedFriends.clone();
+	}
+	
 	public void remove(String friend)
 	{
 		this.allowedFriends.remove(friend);
+	}
+	
+	public Object clone() throws
+    CloneNotSupportedException 
+	{ 
+		return super.clone(); 
 	}
 
 }

@@ -1,5 +1,8 @@
 package dataBoardProj;
 import java.util.List;
+
+import dataBoardProjExceptions.AlreadyLikedException;
+
 import java.util.ArrayList;
 
 
@@ -10,15 +13,15 @@ public class MyData implements Data, Cloneable{
 	 * 
 	 */
 	
-	
+	private Board<?> author;
 	private String data; //contenuto
-	private String categoria; //categoria del dato
+	private Category categoria; //categoria del dato
 	private int likes; //numero di likes
 	private List<String> addedLikes; //array che contiene gli amici che hanno messo like 
 	
 	
 	//Costruttore 
-	public MyData (String content, String category) throws IllegalArgumentException {
+	public MyData (String content, String category, Board author) throws IllegalArgumentException {
 		/*
 		 * @requires: text != null && category != null
 		 * @throw   : se text == null or category == null lancia IllegalArgumentException(Unchecked)
@@ -27,10 +30,10 @@ public class MyData implements Data, Cloneable{
 		 */
 		if( content != null && category != null) 
 		{
-		this.data =  content;
-		this.addedLikes = new ArrayList<String>(0);
-		this.categoria = category;
-		this.likes = 0;
+			this.setAuthor(author);
+			this.data =  content;
+			this.addedLikes = new ArrayList<String>(0);
+			this.likes = 0;
 		}
 		else
 			throw new IllegalArgumentException();
@@ -38,6 +41,13 @@ public class MyData implements Data, Cloneable{
 	
 	
 	
+	private void setAuthor(Board author2) {
+		this.author = author2;
+		
+	}
+
+
+
 	public MyData(MyData copy){//////COPIA//////////////////
 		/* Metodo costrutttore per creare una shallow copy dell'oggetto
 		 * @effects : crea una shallow copy dell'oggetto 
@@ -61,15 +71,26 @@ public class MyData implements Data, Cloneable{
 	}
 
 	@Override
-	public String getCategory() {
-       String tmp = this.categoria;
+	public Category getCategory() {
+       Category tmp = this.categoria;
        return tmp;
+	}
+	
+	public int getLikes() {
+		return this.likes;
 	}
 
 	@Override
-	public void addLike() {
-		// TODO Auto-generated method stub
-        this.likes++;
+	public void addLike(String friend) throws AlreadyLikedException{
+		if(!this.addedLikes.contains(friend))
+		{
+			 this.likes++;
+			 addedLikes.add(friend);
+		}
+		else
+		{
+			 throw new AlreadyLikedException(friend + "ha già messo like a questo dato.");
+		}
 	}
 	
 
@@ -95,6 +116,20 @@ public class MyData implements Data, Cloneable{
     CloneNotSupportedException 
 	{ 
 		return super.clone(); 
-	} 
+	}
+
+
+
+	/**
+	 * @return the author
+	 */
+	public Board getAuthor() {
+		return author;
+	}
+	
+	public void setCategory (Category c) {
+		this.categoria= c;
+	}
+
 
 }
