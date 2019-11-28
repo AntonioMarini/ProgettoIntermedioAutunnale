@@ -13,14 +13,14 @@ public interface DataBoard<E extends Data> {
 	public void removeCategory(String category, String passw) throws WrongPasswordException, NullPointerException, CategoryNotPresentException;
 	
 	// Aggiunge un amico ad una categoria di dati
-	public void addFriend(String category, String passw, String friend) throws WrongPasswordException, DuplicateFriendException;
+	public void addFriend(String category, String passw, String friend) throws WrongPasswordException, NoDuplicatesException, CategoryNotPresentException;
 	
 	// rimuove un amico ad una categoria di dati
 	public void removeFriend(String category, String passw, String friend) throws WrongPasswordException, FriendNotExistsException;
 	
 	// Inserisce un dato in bacheca
 	// se vengono rispettati i controlli di identità
-	public boolean put(String passw , String categoria, E dato) throws NullPointerException, WrongPasswordException, CategoryNotPresentException, AlreadyPresentException;
+	public boolean put(String passw , String categoria, E dato) throws NullPointerException, WrongPasswordException, CategoryNotPresentException, NoDuplicatesException;
 	
 	// Ottiene una copia del del dato in bacheca
 	// se vengono rispettati i controlli di identità

@@ -13,7 +13,6 @@ public class MyData implements Data, Cloneable{
 	 * 
 	 */
 	
-	private Board<?> author;
 	private String data; //contenuto
 	private Category categoria; //categoria del dato
 	private int likes; //numero di likes
@@ -21,7 +20,7 @@ public class MyData implements Data, Cloneable{
 	
 	
 	//Costruttore 
-	public MyData (String content, String category, Board author) throws IllegalArgumentException {
+	public MyData (String content, String category) throws IllegalArgumentException {
 		/*
 		 * @requires: text != null && category != null
 		 * @throw   : se text == null or category == null lancia IllegalArgumentException(Unchecked)
@@ -30,7 +29,6 @@ public class MyData implements Data, Cloneable{
 		 */
 		if( content != null && category != null) 
 		{
-			this.setAuthor(author);
 			this.data =  content;
 			this.addedLikes = new ArrayList<String>(0);
 			this.likes = 0;
@@ -40,26 +38,7 @@ public class MyData implements Data, Cloneable{
 	}
 	
 	
-	
-	private void setAuthor(Board author2) {
-		this.author = author2;
-		
-	}
 
-
-
-	public MyData(MyData copy){//////COPIA//////////////////
-		/* Metodo costrutttore per creare una shallow copy dell'oggetto
-		 * @effects : crea una shallow copy dell'oggetto 
-		 */
-		
-		copy.data = this.data;
-		copy.addedLikes = cloneList(this.addedLikes);
-		copy.categoria = this.getCategory();
-		copy.likes = this.likes;
-	}
-	
-	
 
 	@Override
 	public void display() {
@@ -120,12 +99,7 @@ public class MyData implements Data, Cloneable{
 
 
 
-	/**
-	 * @return the author
-	 */
-	public Board getAuthor() {
-		return author;
-	}
+
 	
 	public void setCategory (Category c) {
 		this.categoria= c;

@@ -2,6 +2,9 @@ package dataBoardProj;
 import java.util.Collections;
 import java.util.Vector;
 
+import dataBoardProjExceptions.FriendNotExistsException;
+import dataBoardProjExceptions.NoDuplicatesException;
+
 
 public class Category implements Cloneable{
 	/*
@@ -27,11 +30,25 @@ public class Category implements Cloneable{
 		return this.name;
 	}
 	
-	public void allowFriend(String newFriend) throws NullPointerException
+	public void allowFriend(String newFriend) throws NullPointerException, NoDuplicatesException
 	{
+		/*
+		 * @requires:	newFriend != null && newFriend is not in allowedFriends
+		 * @throw:		se newFriend == null 					lancia NullPointerException(Unchecked)
+		 * 				se allowedFriend contiene già newFriend lancia NoDuplicatesException(Unchecked)
+		 * @modifies:	this.allowedFriends
+		 * @effect:		this.allowedFriends_post = this.allowedFriends_pre U {newFriend}
+		 */
 		if(newFriend != null)
-		this.allowedFriends.add(newFriend);
-		Collections.sort(allowedFriends);
+		{
+			if(!this.allowedFriends.contains(newFriend))
+			{
+				this.allowedFriends.add(newFriend);
+				Collections.sort(allowedFriends);
+			}
+			else throw new NoDuplicatesException();
+		}
+		else throw new NullPointerException("l'amico da aggiungere non deve essere null");
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -40,9 +57,11 @@ public class Category implements Cloneable{
 		return (Vector<String>) this.allowedFriends.clone();
 	}
 	
-	public void remove(String friend)
+	public void removeAlllowedFriend(String friend) throws FriendNotExistsException
 	{
+		if(this.allowedFriends.contains(friend))
 		this.allowedFriends.remove(friend);
+		else throw new FriendNotExistsException(friend + " non è presente nella categoria " + this.name);;
 	}
 	
 	public Object clone() throws

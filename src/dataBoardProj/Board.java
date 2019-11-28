@@ -2,7 +2,6 @@ package dataBoardProj;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,8 +21,8 @@ public class Board<E extends MyData> implements DataBoard<E> {
 	
 	private String username;				//user id per ogni board
 	private String password;
-	private Vector<E> recordData;			//collezione di dati
-	private Vector<Category> categories;
+	private ArrayList<E> recordData;			//collezione di dati
+	private ArrayList<Category> categories;
 	
 	//Costruttore, crea un'istanza della classe Databoard assegnando username e password
 	public Board(String user, String passw) throws NullPointerException{
@@ -36,8 +35,8 @@ public class Board<E extends MyData> implements DataBoard<E> {
 		{
 			this.username = user;
 			this.password = passw;
-			recordData= new Vector<E>();
-			categories = new Vector<Category>();
+			recordData= new ArrayList<E>();
+			categories = new ArrayList<Category>();
 		}
 		else throw new NullPointerException("User e/o Password sono null");
 		
@@ -76,8 +75,9 @@ public class Board<E extends MyData> implements DataBoard<E> {
 				{
 					rimosso = categories.remove(cat);	//rimuovo la categoria dalla lista
 					cat = null;							//andrà nel garbage collector
+					return;
 				}
-			if(rimosso == false)
+			if(!rimosso)
 				throw new CategoryNotPresentException();//se non è stato rimosso allora la categoria non è presente
 				
 		}
@@ -86,16 +86,33 @@ public class Board<E extends MyData> implements DataBoard<E> {
 	}
 
 	@Override
-	public void addFriend(String category, String passw, String friend) throws WrongPasswordException, DuplicateFriendException{
-		// TODO Auto-generated method stub
-		if(passw == this.password)
+	public void addFriend(String category, String passw, String friend) throws WrongPasswordException, NoDuplicatesException, CategoryNotPresentException{
+		/*
+		 * @requires: passw != null && friend != null && category != null && this.password == passw
+		 * 			  && categoria is in this.categories && friend is not in this.friends
+		 * @throw:
+		 * 			  se passw == null || categoria == null || friend == null lancia NullPointerException(UNCHECKED)
+		 * 			  se passw != this.password 							lancia WrongPasswordException(CHECKED)
+		 * 			  se categoria is not in this.categories				lancia CategoryNotPresentException(CHECKED)
+		 * 			  se friend is not in this.friends						lancia AlreadyPresentException(CHECKED)
+		 * @modifies:
+		 * 			  this_post.recordData = this_pre.recordData U {dato}
+		 * @effects:
+		 * 			  aggiunge dato in this.recordData e restituisce 
+		 * 			  true se l'inserimento è andato a buon fine, false altrimenti
+		 */
+		if(passw != this.password)
 			throw new WrongPasswordException("Password sbagliata.");
 		else {
 			for(Category c : categories)
 			{
 				if(c.getCategoryName() == category)
-					c.allowFriend(friend);          //aggiungo l'amico alla categoria
+				{
+					c.allowFriend(friend); //aggiungo l'amico alla categoria
+					return;
+				}
 			}
+			throw new CategoryNotPresentException(category + " non è presente nella lista delle categorie");
 		}
 
 	}
@@ -116,19 +133,23 @@ public class Board<E extends MyData> implements DataBoard<E> {
 		 * 			  aggiunge dato in this.recordData e restituisce 
 		 * 			  true se l'inserimento è andato a buon fine, false altrimenti
 		 */
-		if(passw == this.password)
+		if(passw != this.password)
 			throw new WrongPasswordException("Password sbagliata.");
 		else {
 			for(Category c : categories)
 			{
 				if(c.getCategoryName() == category)
-					c.remove(friend);          //rimuovo l'amico alla categoria
+				{	
+					c.removeAlllowedFriend(friend);          //rimuovo l'amico alla categoria
+					return;
+				}
 			}
+			
 		}
 	}
 
 	@Override
-	public boolean put(String passw, String categoria, E dato) throws NullPointerException, WrongPasswordException, CategoryNotPresentException, AlreadyPresentException {
+	public boolean put(String passw, String categoria, E dato) throws NullPointerException, WrongPasswordException, CategoryNotPresentException, NoDuplicatesException {
 		/*
 		 * @requires: passw != null && categoria != null && dato != null && this.password == passw
 		 * 			  && categoria is in this.categories && dato is not in this.recordData
@@ -156,7 +177,7 @@ public class Board<E extends MyData> implements DataBoard<E> {
 		if(!trovato)
 			throw new CategoryNotPresentException(categoria + "non è presente nelle categorie");
 		if(this.recordData.contains(dato))
-			throw new AlreadyPresentException();
+			throw new NoDuplicatesException();
 		
 		
 	    boolean res = this.recordData.add(dato);    //passati tutti i controlli aggiungo il dato
@@ -179,14 +200,14 @@ public class Board<E extends MyData> implements DataBoard<E> {
 			throw new NullPointerException();
 		if(passw != this.password)
 			throw new WrongPasswordException("Password sbagliata.");
-		if(!recordData.contains(dato))
-			throw new DataNotPresentException("Dato non presente in bacheca.");
-		else
+		for(E d: recordData)
 		{
-			E cpy = (E) recordData.elementAt(recordData.indexOf(dato)).clone();
-			return cpy;
+			if(d.equals(dato))
+			{
+				return (E) dato.clone();
+			}
 		}
-		
+		throw new DataNotPresentException("Dato non presente in bacheca");
 	}
 
 
