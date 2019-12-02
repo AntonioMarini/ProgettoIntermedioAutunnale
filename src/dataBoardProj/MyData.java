@@ -14,20 +14,20 @@ public class MyData implements Data, Cloneable{
 	 */
 	
 	private String data; //contenuto
-	private Category categoria; //categoria del dato
+	private String categoria; //categoria del dato
 	private int likes; //numero di likes
 	private List<String> addedLikes; //array che contiene gli amici che hanno messo like 
 	
 	
 	//Costruttore 
-	public MyData (String content, String category) throws IllegalArgumentException {
+	public MyData (String content) throws IllegalArgumentException {
 		/*
 		 * @requires: text != null && category != null
 		 * @throw   : se text == null or category == null lancia IllegalArgumentException(Unchecked)
 		 * @modifies: this
 		 * @effects : create a new Object 
 		 */
-		if( content != null && category != null) 
+		if( content != null) 
 		{
 			this.data =  content;
 			this.addedLikes = new ArrayList<String>(0);
@@ -50,9 +50,8 @@ public class MyData implements Data, Cloneable{
 	}
 
 	@Override
-	public Category getCategory() {
-       Category tmp = this.categoria;
-       return tmp;
+	public String getCategory() throws CloneNotSupportedException {
+       return this.categoria;
 	}
 	
 	public int getLikes() {
@@ -74,35 +73,16 @@ public class MyData implements Data, Cloneable{
 	
 
 
-	//metodo per clonare la lista di stringhe
-	public List<String> cloneList(List<String> toCopyList) throws NullPointerException{
-		/*
-		 * @requires: toCopyList != null
-		 * @throw:	se toCopyList == null lancio NullPointerException
-		 * @effects:	restituisco una copia della lista
-		 */
-		if(toCopyList != null) {
-			List<String> copy = new ArrayList<String>(toCopyList.size()); 
-			for(String friend : toCopyList) copy.add(friend); //copio il contenuto in copy
-			return copy; 	//restituisco la copia dell'oggetto.
-		}
-		
-		else throw new NullPointerException("La lista da copiare è null");
-	}
-
-
 	public Object clone() throws
     CloneNotSupportedException 
 	{ 
-		return super.clone(); 
+		MyData cloned = (MyData) super.clone();
+		return cloned; 
 	}
 
-
-
-
 	
-	public void setCategory (Category c) {
-		this.categoria= c;
+	public void setCategory (String c) {
+		this.categoria = c;
 	}
 
 

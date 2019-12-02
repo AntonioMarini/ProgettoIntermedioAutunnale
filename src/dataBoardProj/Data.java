@@ -15,7 +15,7 @@ public interface Data {
 	//metodo toString di Object per l'adt Data
 
 	//ottiene la categoria del dato
-    public Category getCategory();
+    public String getCategory() throws CloneNotSupportedException;
     
     //incrementa il contatore dei like
     public void addLike(String friend) throws AlreadyLikedException;

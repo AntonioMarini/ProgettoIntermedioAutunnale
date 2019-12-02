@@ -20,7 +20,7 @@ public interface DataBoard<E extends Data> {
 	
 	// Inserisce un dato in bacheca
 	// se vengono rispettati i controlli di identità
-	public boolean put(String passw , String categoria, E dato) throws NullPointerException, WrongPasswordException, CategoryNotPresentException, NoDuplicatesException;
+	public boolean put(String passw , String categoria, E dato) throws NullPointerException, WrongPasswordException, CategoryNotPresentException, NoDuplicatesException, CloneNotSupportedException;
 	
 	// Ottiene una copia del del dato in bacheca
 	// se vengono rispettati i controlli di identità
@@ -41,12 +41,12 @@ public interface DataBoard<E extends Data> {
 	public Iterator<E> getIterator(String passw) throws NullPointerException, WrongPasswordException;
 	
 	// Aggiunge un like a un dato
-	public void insertLike(String friend, E data) throws NullPointerException, WrongPasswordException, AlreadyLikedException;
+	public void insertLike(String friend, E data) throws NullPointerException, WrongPasswordException, AlreadyLikedException, FriendNotExistsException, CategoryNotPresentException, CloneNotSupportedException;
 	
 	// Legge un dato condiviso
 	// restituisce un iteratore (senza remove) che genera tutti i dati in
 	// bacheca condivisi.
-	public Iterator<E> getFriendIterator(String friend) throws NullPointerException;
+	public Iterator<E> getFriendIterator(String friend) throws NullPointerException, CloneNotSupportedException;
 	
 
 	// ... altre operazione da definire a scelta

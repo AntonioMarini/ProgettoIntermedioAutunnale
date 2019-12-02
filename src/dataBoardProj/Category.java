@@ -1,6 +1,6 @@
 package dataBoardProj;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Vector;
 
 import dataBoardProjExceptions.FriendNotExistsException;
 import dataBoardProjExceptions.NoDuplicatesException;
@@ -16,13 +16,13 @@ public class Category implements Cloneable{
 	 */
 	
 	private String name;					//nome della categoria
-	private Vector<String> allowedFriends;	//lista di amici che possono vedere dati di quella categoria 
+	private ArrayList<String> allowedFriends;	//lista di amici che possono vedere dati di quella categoria 
 	
 	
 	public Category(String nm)
 	{
 		this.name = nm;
-		this.allowedFriends = new Vector<String>();
+		this.allowedFriends = new ArrayList<String>();
 	}
 	
 	public String getCategoryName()
@@ -51,10 +51,10 @@ public class Category implements Cloneable{
 		else throw new NullPointerException("l'amico da aggiungere non deve essere null");
 	}
 	
-	@SuppressWarnings("unchecked")
-	public Vector<String> getAllowedFriends()
+	
+	public ArrayList<String> getAllowedFriends()
 	{
-		return (Vector<String>) this.allowedFriends.clone();
+		return new ArrayList<String>(allowedFriends);
 	}
 	
 	public void removeAlllowedFriend(String friend) throws FriendNotExistsException
@@ -64,9 +64,12 @@ public class Category implements Cloneable{
 		else throw new FriendNotExistsException(friend + " non è presente nella categoria " + this.name);;
 	}
 	
+	//deep copy di category
 	public Object clone() throws
     CloneNotSupportedException 
 	{ 
+		Category cloned = (Category) super.clone();
+		cloned.allowedFriends = this.getAllowedFriends();
 		return super.clone(); 
 	}
 

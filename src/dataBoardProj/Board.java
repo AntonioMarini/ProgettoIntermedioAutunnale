@@ -52,7 +52,7 @@ public class Board<E extends MyData> implements DataBoard<E> {
 		 * @effects:	this.categories_post = this.categories_pre U {category}
 		 */
 		if(category == null || passw == null)
-			throw new NullPointerException("category e/o passw devono essere non null");
+			throw new NullPointerException("I parametri passati non devono essere null");
 		if(passw == this.password)
 			categories.add(new Category(category));
 		else throw new WrongPasswordException("Password sbagliata.");
@@ -94,9 +94,9 @@ public class Board<E extends MyData> implements DataBoard<E> {
 		 * 			  se passw == null || categoria == null || friend == null lancia NullPointerException(UNCHECKED)
 		 * 			  se passw != this.password 							lancia WrongPasswordException(CHECKED)
 		 * 			  se categoria is not in this.categories				lancia CategoryNotPresentException(CHECKED)
-		 * 			  se friend is not in this.friends						lancia AlreadyPresentException(CHECKED)
+		 * 			  se friend is not in this.friends						lancia NoDuplicatesException(CHECKED)
 		 * @modifies:
-		 * 			  this_post.recordData = this_pre.recordData U {dato}
+		 * 			  this.categories[category].allowedFriends_post = this.categories[category].allowedFriends_pre U {friend}
 		 * @effects:
 		 * 			  aggiunge dato in this.recordData e restituisce 
 		 * 			  true se l'inserimento è andato a buon fine, false altrimenti
@@ -104,14 +104,12 @@ public class Board<E extends MyData> implements DataBoard<E> {
 		if(passw != this.password)
 			throw new WrongPasswordException("Password sbagliata.");
 		else {
-			for(Category c : categories)
-			{
-				if(c.getCategoryName() == category)
+				Category c = this.findCategory(category);
+				if(c != null)
 				{
 					c.allowFriend(friend); //aggiungo l'amico alla categoria
 					return;
 				}
-			}
 			throw new CategoryNotPresentException(category + " non è presente nella lista delle categorie");
 		}
 
@@ -136,20 +134,17 @@ public class Board<E extends MyData> implements DataBoard<E> {
 		if(passw != this.password)
 			throw new WrongPasswordException("Password sbagliata.");
 		else {
-			for(Category c : categories)
-			{
-				if(c.getCategoryName() == category)
+			Category c = this.findCategory(category);
+				if(c != null)
 				{	
 					c.removeAlllowedFriend(friend);          //rimuovo l'amico alla categoria
 					return;
-				}
-			}
-			
+				}	
 		}
 	}
 
 	@Override
-	public boolean put(String passw, String categoria, E dato) throws NullPointerException, WrongPasswordException, CategoryNotPresentException, NoDuplicatesException {
+	public boolean put(String passw, String categoria, E dato) throws NullPointerException, WrongPasswordException, CategoryNotPresentException, NoDuplicatesException, CloneNotSupportedException {
 		/*
 		 * @requires: passw != null && categoria != null && dato != null && this.password == passw
 		 * 			  && categoria is in this.categories && dato is not in this.recordData
@@ -164,24 +159,22 @@ public class Board<E extends MyData> implements DataBoard<E> {
 		 * 			  aggiunge dato in this.recordData e restituisce 
 		 * 			  true se l'inserimento è andato a buon fine, false altrimenti
 		 */
-		if(passw == null || categoria == null || dato == null)
+		if(passw == null || categoria == null || dato == null)  //controllo non null
 			throw new NullPointerException();
 		if(passw != this.password)
-			throw new WrongPasswordException("Password sbagliata.");
-		boolean trovato = false;
-		for(Category c: categories)
-		{
-			if(c.getCategoryName() == categoria)
-				trovato = true;
-		}
-		if(!trovato)
+			throw new WrongPasswordException("Password sbagliata."); //controllo password
+		Category c = this.findCategory(categoria);
+		if(c == null)												 //controllo presenza della categoria
 			throw new CategoryNotPresentException(categoria + "non è presente nelle categorie");
-		if(this.recordData.contains(dato))
-			throw new NoDuplicatesException();
-		
-		
-	    boolean res = this.recordData.add(dato);    //passati tutti i controlli aggiungo il dato
-		return res;									//restituisco l'esito dell'inserimento
+		boolean res = false;
+			if(!this.recordData.contains(dato))  //se il dato non è nella board
+			{
+				dato.setCategory(categoria);	 //imposto la categoria del dato
+				res = this.recordData.add(dato); //aggiungo il dato
+			}	
+			else
+				throw new NoDuplicatesException(); 
+			return res;									//restituisco l'esito dell'inserimento
 		
 	}
 
@@ -251,7 +244,7 @@ public class Board<E extends MyData> implements DataBoard<E> {
 		
 		for(E dato : recordData)
 		{
-			if(dato.getCategory().getCategoryName() == category)
+			if(dato.getCategory() == category)
 			{
 				res.add((E) dato.clone());
 				trovato = true;
@@ -269,18 +262,36 @@ public class Board<E extends MyData> implements DataBoard<E> {
 	}
 
 	@Override
-	public void insertLike(String friend, E data) throws AlreadyLikedException{
-		data.addLike(friend);
+	public void insertLike(String friend, E data) throws AlreadyLikedException, NullPointerException, FriendNotExistsException, CategoryNotPresentException, CloneNotSupportedException{
+		/*
+		 * @requires: friend != null && data != null && data.category is in this.categories && friend is in data.category.allowedFriends
+		 * 
+		 * @throw:	  se friend == null || data == null 				lancia NullPointerException(Unchecked)
+		 * 			  se data.category is not in this.categories 		lancia CategoryNotPresentException
+		 * 			  se fiend is not in data.category.allowedFriends 	lancia FriendNotExistsException
+		 * 
+		 * @modifies:this.data.likes
+		 * @effects: this.data.likes_post = this.data.likes_pre + 1
+		 */
+		String cat = data.getCategory();
+		if(cat == null)
+			throw new CategoryNotPresentException("La categoria del dato non è presente nelle categorie della board, prima devi aggiungere la categoria.");
+		if(this.findCategory(cat).getAllowedFriends().contains(friend))
+			data.addLike(friend);
+		else throw new FriendNotExistsException(friend + " non ha accesso alla categoria del dato");
+		
+			
 	}
 
 	@Override
-	public Iterator<E> getFriendIterator(String friend) {
-		ArrayList<E> a = new ArrayList<E>();
+	public Iterator<E> getFriendIterator(String friend) throws CloneNotSupportedException {
+	/*	ArrayList<E> a = new ArrayList<E>();
 		for(E dato: recordData) {
 			if(dato.getCategory().getAllowedFriends().contains(friend))
 				a.add(dato);
 		}
-		return a.iterator();
+		return a.iterator();*/
+		return null;
 	}
 
 	/**
@@ -288,6 +299,22 @@ public class Board<E extends MyData> implements DataBoard<E> {
 	 */
 	public String getUsername() {
 		return username;
+	}
+	
+	public ArrayList<Category> getBoardCategories()
+	{
+		ArrayList<Category> cloned = new ArrayList<Category>(this.categories);
+		return cloned;
+	}
+	
+	public Category findCategory(String name)
+	{
+		for(Category cat : this.categories)
+		{
+			if(cat.getCategoryName() == name)
+				return cat;
+		}
+		return null;
 	}
 
 }
@@ -301,3 +328,5 @@ class SortByLike implements Comparator<MyData>
         return a.getLikes() - b.getLikes(); 
     } 
 } 
+
+
