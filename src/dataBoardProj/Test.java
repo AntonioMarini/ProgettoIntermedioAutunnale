@@ -6,6 +6,7 @@ import dataBoardProjExceptions.AlreadyLikedException;
 import dataBoardProjExceptions.CategoryNotPresentException;
 import dataBoardProjExceptions.FriendNotExistsException;
 import dataBoardProjExceptions.NoDuplicatesException;
+import dataBoardProjExceptions.NotRemovableException;
 import dataBoardProjExceptions.WrongPasswordException;
 
 public class Test {
@@ -61,13 +62,15 @@ public class Test {
 		
 		//RIMOZIONE DI CATEGORIE
 		try {
-			antonio.removeCategory("Frutta", "1234");
+			antonio.removeCategory("Verdura", "1234");
+			antonio.removeCategory("Pesce", "1234");
+			antonio.removeCategory("Verdura", "1234");
 			Iterator<MyData> it = antonio.getIterator("1234");
 			while (it.hasNext())
 			{
 				it.next().display();
 			}
-		} catch (NullPointerException | WrongPasswordException | CategoryNotPresentException e1) {
+		} catch (NullPointerException | WrongPasswordException | CategoryNotPresentException | NotRemovableException  e1) {
 			e1.printStackTrace();
 		}
 		

@@ -59,26 +59,26 @@ public class Board<E extends MyData> implements DataBoard<E> {
 	}
 
 	@Override
-	public void removeCategory(String category, String passw) throws WrongPasswordException , NullPointerException, CategoryNotPresentException {
+	public void removeCategory(String category, String passw) throws WrongPasswordException , NullPointerException, CategoryNotPresentException, NotRemovableException, CloneNotSupportedException {
 		/*
-		 * @requires:	category != null && passw != null && passw == this.password
+		 * @requires:	category != null && passw != null && passw == this.password && for each data in this.recordData => data.category != category
 		 * @throw:		se category != null || passw != null lancia NullPointerException(Unchecked)
 		 * 				se passw != this.password 			 lancia WrongPasswordException(Checked)
 		 * @modifies:	this.categories
 		 * @effects:	this.categories_post = this.categories_pre \ {category}
 		 */
+		if(category == null || passw == null)
+			throw new NullPointerException();
 		if(passw == this.password)
 		{
-			boolean rimosso = false;
-			for(Category cat : categories)
-				if(cat.getCategoryName() == category)
-				{
-					rimosso = categories.remove(cat);	//rimuovo la categoria dalla lista
-					cat = null;							//andrà nel garbage collector
-					return;
-				}
-			if(!rimosso)
-				throw new CategoryNotPresentException();//se non è stato rimosso allora la categoria non è presente
+			for(E data:recordData )
+				if(data.getCategory() == category)
+					throw new NotRemovableException("Ci sono ancora dati nella board con questa categoria: non è possibile rimuoverla.");
+			Category cat = this.findCategory(category);
+			if(cat == null)
+				throw new CategoryNotPresentException(category + " non è presente nelle categorie della board.");//se non è stato rimosso allora la categoria non è presente
+				categories.remove(cat);	//rimuovo la categoria dalla lista
+				cat = null;							//andrà nel garbage collector
 				
 		}
 		else throw new WrongPasswordException("Password sbagliata.");
