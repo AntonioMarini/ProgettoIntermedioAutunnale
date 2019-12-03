@@ -20,9 +20,9 @@ public class Board<E extends MyData> implements DataBoard<E> {
 	 */
 	
 	private String username;				//user id per ogni board
-	private String password;
-	private ArrayList<E> recordData;			//collezione di dati
-	private ArrayList<Category> categories;
+	private String password;				//password univoca per l'user
+	private ArrayList<E> recordData;	    //collezione di dati	
+	private ArrayList<Category> categories; //collezione di categorie
 	
 	//Costruttore, crea un'istanza della classe Databoard assegnando username e password
 	public Board(String user, String passw) throws NullPointerException{
@@ -64,6 +64,8 @@ public class Board<E extends MyData> implements DataBoard<E> {
 		 * @requires:	category != null && passw != null && passw == this.password && for each data in this.recordData => data.category != category
 		 * @throw:		se category != null || passw != null lancia NullPointerException(Unchecked)
 		 * 				se passw != this.password 			 lancia WrongPasswordException(Checked)
+		 * 				se category is not in this.categories lancia CategoryNotPresentException(Checked)
+		 * 				se esiste data in recordData t.c. data.category == category  lancia NotRemovableException(Checked)
 		 * @modifies:	this.categories
 		 * @effects:	this.categories_post = this.categories_pre \ {category}
 		 */
@@ -71,15 +73,15 @@ public class Board<E extends MyData> implements DataBoard<E> {
 			throw new NullPointerException();
 		if(passw == this.password)
 		{
+			Category cat = this.findCategory(category);
+			if(cat == null)
+				throw new CategoryNotPresentException(category + " non è presente nelle categorie della board.");
 			for(E data:recordData )
 				if(data.getCategory() == category)
 					throw new NotRemovableException("Ci sono ancora dati nella board con questa categoria: non è possibile rimuoverla.");
-			Category cat = this.findCategory(category);
-			if(cat == null)
-				throw new CategoryNotPresentException(category + " non è presente nelle categorie della board.");//se non è stato rimosso allora la categoria non è presente
+			//se non è stato rimosso allora la categoria non è presente
 				categories.remove(cat);	//rimuovo la categoria dalla lista
 				cat = null;							//andrà nel garbage collector
-				
 		}
 		else throw new WrongPasswordException("Password sbagliata.");
 
@@ -101,6 +103,8 @@ public class Board<E extends MyData> implements DataBoard<E> {
 		 * 			  aggiunge dato in this.recordData e restituisce 
 		 * 			  true se l'inserimento è andato a buon fine, false altrimenti
 		 */
+		if(passw== null || category == null || friend == null)
+			throw new NullPointerException();
 		if(passw != this.password)
 			throw new WrongPasswordException("Password sbagliata.");
 		else {
@@ -131,6 +135,8 @@ public class Board<E extends MyData> implements DataBoard<E> {
 		 * 			  aggiunge dato in this.recordData e restituisce 
 		 * 			  true se l'inserimento è andato a buon fine, false altrimenti
 		 */
+		if(passw== null || category == null || friend == null)
+			throw new NullPointerException();
 		if(passw != this.password)
 			throw new WrongPasswordException("Password sbagliata.");
 		else {
@@ -177,6 +183,7 @@ public class Board<E extends MyData> implements DataBoard<E> {
 			return res;									//restituisco l'esito dell'inserimento
 		
 	}
+
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -256,8 +263,8 @@ public class Board<E extends MyData> implements DataBoard<E> {
 
 	@Override
 	public Iterator<E> getIterator(String passw) {
-		Collections.sort(recordData, new SortByLike() );
-		Iterator<E> it = recordData.iterator();
+		Collections.sort(recordData, new SortByLike() );//ordino i dati per numero di like
+		Iterator<E> it = Collections.unmodifiableList(recordData).iterator();//restituisco un iteratore di una lista senza remove
 		return it;
 	}
 
@@ -273,6 +280,8 @@ public class Board<E extends MyData> implements DataBoard<E> {
 		 * @modifies:this.data.likes
 		 * @effects: this.data.likes_post = this.data.likes_pre + 1
 		 */
+		if(friend == null || data == null)
+			throw new NullPointerException();
 		String cat = data.getCategory();
 		if(cat == null)
 			throw new CategoryNotPresentException("La categoria del dato non è presente nelle categorie della board, prima devi aggiungere la categoria.");
@@ -283,16 +292,23 @@ public class Board<E extends MyData> implements DataBoard<E> {
 			
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Iterator<E> getFriendIterator(String friend) throws CloneNotSupportedException {
-	/*	ArrayList<E> a = new ArrayList<E>();
+	public Iterator<E> getFriendIterator(String friend) throws CloneNotSupportedException, NullPointerException{
+		if(friend == null)
+			throw new NullPointerException();
+		ArrayList<E> a = new ArrayList<E>();
 		for(E dato: recordData) {
-			if(dato.getCategory().getAllowedFriends().contains(friend))
-				a.add(dato);
+			String catName = dato.getCategory();		//ottengo il nome della categoria
+			Category cat = this.findCategory(catName);	//cerco la categoria di quel dato
+			if(cat.getAllowedFriends().contains(friend))
+				a.add((E) dato.clone()); //se l'amico ha accesso alla categoria aggiungo alla lista il dato
 		}
-		return a.iterator();*/
-		return null;
+		return Collections.unmodifiableList(a).iterator(); //restituisco l'iteratore senza remove
 	}
+	
+	
+	/* ALTRI METODI ///////////////*/
 
 	/**
 	 * @return the username
@@ -301,11 +317,7 @@ public class Board<E extends MyData> implements DataBoard<E> {
 		return username;
 	}
 	
-	public ArrayList<Category> getBoardCategories()
-	{
-		ArrayList<Category> cloned = new ArrayList<Category>(this.categories);
-		return cloned;
-	}
+	
 	
 	public Category findCategory(String name)
 	{
@@ -319,10 +331,10 @@ public class Board<E extends MyData> implements DataBoard<E> {
 
 }
 
+
+//Comparator che ordina in modo crescente i dati
 class SortByLike implements Comparator<MyData> 
 { 
-    // Used for sorting in ascending order of 
-    // roll number 
     public int compare(MyData a, MyData b) 
     { 
         return a.getLikes() - b.getLikes(); 

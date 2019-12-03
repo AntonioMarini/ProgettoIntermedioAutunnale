@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 
 
-public class MyData implements Data, Cloneable{
+public class MyData implements Data, Cloneable, Comparable<Object>{
 	/*
 	 * IR: c.data != null && c.categoria != null && c.likes >= 0  
 	 * 
@@ -83,6 +83,15 @@ public class MyData implements Data, Cloneable{
 	
 	public void setCategory (String c) {
 		this.categoria = c;
+	}
+
+
+
+
+	@Override
+	public int compareTo(Object arg0) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 

@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import dataBoardProjExceptions.AlreadyLikedException;
 import dataBoardProjExceptions.CategoryNotPresentException;
+import dataBoardProjExceptions.DataNotPresentException;
 import dataBoardProjExceptions.FriendNotExistsException;
 import dataBoardProjExceptions.NoDuplicatesException;
 import dataBoardProjExceptions.NotRemovableException;
@@ -60,7 +61,7 @@ public class Test {
 		}
 		
 		
-		//RIMOZIONE DI CATEGORIE
+	/*	//RIMOZIONE DI CATEGORIE
 		try {
 			antonio.removeCategory("Verdura", "1234");
 			antonio.removeCategory("Pesce", "1234");
@@ -83,12 +84,29 @@ public class Test {
 				| CategoryNotPresentException e) {
 
 			e.printStackTrace();
+		}*/
+		
+		
+		
+	   //TEST DEL METODO get(passw, data)
+		try {
+			MyData f = antonio.get("1234", frutta1);
+			f.addLike("peppino");
+			f.addLike("gaiiai");
+			f.display();
+			Iterator<MyData> it = antonio.getIterator("1234");
+			while (it.hasNext())
+			{
+				it.next().display();
+			}
+			
+		} catch (NullPointerException | WrongPasswordException | DataNotPresentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (AlreadyLikedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		
-		
-	
-		
 		
 			
 		
