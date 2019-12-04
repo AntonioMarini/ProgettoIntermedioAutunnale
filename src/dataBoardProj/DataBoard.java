@@ -7,7 +7,7 @@ import java.util.List;
 public interface DataBoard<E extends Data> {
 	
 	// Crea l’identità una categoria di dati
-	public void createCategory(String category, String passw) throws WrongPasswordException;
+	public void createCategory(String category, String passw) throws WrongPasswordException, NullPointerException, NoDuplicatesException;
 	
 	// Rimuove l’identità una categoria di dati
 	public void removeCategory(String category, String passw) throws WrongPasswordException, NullPointerException, CategoryNotPresentException, NotRemovableException, CloneNotSupportedException;
@@ -16,7 +16,7 @@ public interface DataBoard<E extends Data> {
 	public void addFriend(String category, String passw, String friend) throws WrongPasswordException, NoDuplicatesException, CategoryNotPresentException;
 	
 	// rimuove un amico ad una categoria di dati
-	public void removeFriend(String category, String passw, String friend) throws WrongPasswordException, FriendNotExistsException;
+	public void removeFriend(String category, String passw, String friend) throws WrongPasswordException, FriendNotExistsException, NotRemovableException;
 	
 	// Inserisce un dato in bacheca
 	// se vengono rispettati i controlli di identità

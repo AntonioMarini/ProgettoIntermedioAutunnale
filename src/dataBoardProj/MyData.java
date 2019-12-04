@@ -32,6 +32,7 @@ public class MyData implements Data, Cloneable, Comparable<Object>{
 			this.data =  content;
 			this.addedLikes = new ArrayList<String>(0);
 			this.likes = 0;
+			
 		}
 		else
 			throw new IllegalArgumentException();
@@ -82,6 +83,9 @@ public class MyData implements Data, Cloneable, Comparable<Object>{
 
 	
 	public void setCategory (String c) {
+		if(c == null)
+			this.categoria = null;
+		else
 		this.categoria = c;
 	}
 

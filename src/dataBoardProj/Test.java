@@ -1,5 +1,6 @@
 package dataBoardProj;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import dataBoardProjExceptions.AlreadyLikedException;
@@ -15,105 +16,173 @@ public class Test {
 	
 	public static void main(String[] args) throws CloneNotSupportedException {
 		
+		String user = "Antonio";
+		String password ="1234";
+		Board<MyData> games = new Board<MyData>(user, password);
 		
-		Board<MyData> antonio = new Board<MyData>("Apollyon", "1234");
-		MyData frutta1 = new MyData("Mele");
-		MyData frutta2 = new MyData("Banane"); 
-		MyData carne1 = new MyData("Macinato di Maiale");
-		MyData carne2 = new MyData("Petto di pollo");
+		//creo vari dati che andrò ad utilizzare nella board games
+		MyData a = new MyData("Max Payne 3");
+		MyData b = new MyData("Tomb Raider");
+		MyData c = new MyData("The Elder Scrolls V: Skyrim");
+		MyData d = new MyData("The Witcher 3: Wild Hunt");
+		MyData f = new MyData("DragonBall Z: Budokai Tenkaichi 3");
+		MyData g = new MyData("Uncharted 4");
+		MyData h = new MyData("Death Stranding");
 		
+		//CREAZIONE CATEGORIE
 		try {
-			antonio.createCategory("Frutta", "1234");
-			antonio.createCategory("Verdura", "1234");
-			antonio.createCategory("Macelleria", "1234");
-			antonio.createCategory("Pesce", "1234");
-			antonio.createCategory("Cosmetici", "1234");
+			games.createCategory("Azione", "1234");
+			games.removeCategory("Azione", "1234");
+			games.createCategory("Azione", "1234");
+			games.createCategory("Avventura", "1234");
+			games.createCategory("RPG", "1234");
+			games.createCategory("Picchiaduro", "1234");
 			
-
+			
 		} catch (NullPointerException | WrongPasswordException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-	
-		
-		
-		//INSERIMENTO PRODOTTI NELLA BOARD
-		try {
-			antonio.put("1234", "Frutta", frutta1);
-			antonio.put("1234", "Frutta", frutta2);
-			antonio.put("1234", "Macelleria", carne1);
-			antonio.put("1234", "Macelleria", carne2);
-		} catch (NullPointerException | WrongPasswordException | CategoryNotPresentException
-				| NoDuplicatesException e1) {
-			e1.printStackTrace();
+		} catch (CategoryNotPresentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NotRemovableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		
-		//AGGIUNTA DI AMICI
-		try {
-			antonio.addFriend("Frutta", "1234", "peppino");
-			antonio.addFriend("Frutta", "1234", "gigi");
-			antonio.addFriend("Macelleria", "1234", "gigi");
+		//AGGIUNGO E RIMUOVO AMICI
+	    try {
+			games.addFriend("Azione", "1234", "Giuseppe");
+			games.addFriend("Azione", "1234", "Martina");
+			games.addFriend("RPG", "1234", "Giovanni");
+			games.addFriend("Picchiaduro", "1234", "Daniele");
+			games.addFriend("Avventura", "1234", "Salvatore");
+			games.removeFriend("RPG", "1234", "Giovanni");
 		} catch (WrongPasswordException | NoDuplicatesException | CategoryNotPresentException e) {
-
-			e.printStackTrace();
-		}
-		
-		
-	/*	//RIMOZIONE DI CATEGORIE
-		try {
-			antonio.removeCategory("Verdura", "1234");
-			antonio.removeCategory("Pesce", "1234");
-			antonio.removeCategory("Verdura", "1234");
-			Iterator<MyData> it = antonio.getIterator("1234");
-			while (it.hasNext())
-			{
-				it.next().display();
-			}
-		} catch (NullPointerException | WrongPasswordException | CategoryNotPresentException | NotRemovableException  e1) {
-			e1.printStackTrace();
-		}
-		
-		//METTO LIKE E MOSTRO TRAMITE L'ITERATORE I DATI CON IL METODO display()
-		try {
-			antonio.insertLike("peppino", frutta1);
-			antonio.insertLike("gigi", frutta1);
-			
-		} catch (NullPointerException | AlreadyLikedException | FriendNotExistsException
-				| CategoryNotPresentException e) {
-
-			e.printStackTrace();
-		}*/
-		
-		
-		
-	   //TEST DEL METODO get(passw, data)
-		try {
-			MyData f = antonio.get("1234", frutta1);
-			f.addLike("peppino");
-			f.addLike("gaiiai");
-			f.display();
-			Iterator<MyData> it = antonio.getIterator("1234");
-			while (it.hasNext())
-			{
-				it.next().display();
-			}
-			
-		} catch (NullPointerException | WrongPasswordException | DataNotPresentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (AlreadyLikedException e) {
+		} catch (FriendNotExistsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+	      
+	    //AGGIUNGO, LEGGO E RIMUOVO I DATI DALLA BOARD
+	    try {
+			games.put("1234", "Azione", a );
+			games.put("1234", "Avventura",  b);
+			games.put("1234", "RPG", c );
+			games.put("1234", "RPG", d );
+			games.put("1234", "Picchiaduro", f );
+			games.put("1234", "Avventura", g );
+			games.put("1234", "Avventura", h );
 			
-		
-		
+			games.remove("1234", h);
+			games.put("1234", "Avventura", h );
+			//games.get("1234", a).display();
+		} catch (NullPointerException | WrongPasswordException | CategoryNotPresentException
+				| NoDuplicatesException | DataNotPresentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	    
+	    //PROVO getDataCategory()
+	    try {
+			ArrayList<MyData> listAdventure = (ArrayList<MyData>) games.getDataCategory("1234", "Avventura");
+			for(MyData dato : listAdventure)
+				dato.display();
+			
+		} catch (NullPointerException | WrongPasswordException | CategoryNotPresentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//TEST SECONDA IMPLEMENTAZIONE
+		
+		password ="1234";
+		Board2<MyData> games2 = new Board2<MyData>(password);
+		
+		//creo vari dati che andrò ad utilizzare nella board games
+				MyData a2 = new MyData("Max Payne 3");
+				MyData b2 = new MyData("Tomb Raider");
+				MyData c2 = new MyData("The Elder Scrolls V: Skyrim");
+				MyData d2 = new MyData("The Witcher 3: Wild Hunt");
+				MyData f2 = new MyData("DragonBall Z: Budokai Tenkaichi 3");
+				MyData g2 = new MyData("Uncharted 4");
+				MyData h2 = new MyData("Death Stranding");
+		
+		//CREAZIONE CATEGORIE
+		try {
+			games2.createCategory("Azione", "1234");
+			games2.removeCategory("Azione", "1234");
+			games2.createCategory("Azione", "1234");
+			games2.createCategory("Avventura", "1234");
+			games2.createCategory("RPG", "1234");
+			games2.createCategory("Picchiaduro", "1234");
+			
+			
+		} catch (NullPointerException | WrongPasswordException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoDuplicatesException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CategoryNotPresentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
+		//AGGIUNGO E RIMUOVO AMICI
+	    try {
+			games2.addFriend("Azione", "1234", "Giuseppe");
+			games2.addFriend("Azione", "1234", "Martina");
+			games2.addFriend("RPG", "1234", "Giovanni");
+			games2.addFriend("Picchiaduro", "1234", "Daniele");
+			games2.addFriend("Avventura", "1234", "Salvatore");
+			games2.removeFriend("RPG", "1234", "Giovanni");
+		} catch (WrongPasswordException | NoDuplicatesException | CategoryNotPresentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FriendNotExistsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NotRemovableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	      
+	    //AGGIUNGO, LEGGO E RIMUOVO I DATI DALLA BOARD
+	    try {
+			games2.put("1234", "Azione", a2 );
+			games2.put("1234", "Avventura",  b2);
+			games2.put("1234", "RPG", c2 );
+			games2.put("1234", "RPG", d2 );
+			games2.put("1234", "Picchiaduro", f2 );
+			games2.put("1234", "Avventura", g2 );
+			games2.put("1234", "Avventura", h2 );
+			
+			games2.remove("1234", a2);
+			games2.put("1234", "Azione", a2 );
+			//games2.get("1234", a2).display();
+		} catch (NullPointerException | WrongPasswordException | CategoryNotPresentException
+				| NoDuplicatesException | DataNotPresentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    
+	    
+	    //PROVO getDataCategory()
+	    try {
+			ArrayList<MyData> listAdventure = (ArrayList<MyData>) games2.getDataCategory("1234", "Avventura");
+			for(MyData dato : listAdventure)
+				dato.display();
+			
+		} catch (NullPointerException | WrongPasswordException | CategoryNotPresentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    
+	    
 	}
-
 }
