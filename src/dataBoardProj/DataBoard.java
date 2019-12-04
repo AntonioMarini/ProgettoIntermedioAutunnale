@@ -41,7 +41,7 @@ public interface DataBoard<E extends Data> {
 	public Iterator<E> getIterator(String passw) throws NullPointerException, WrongPasswordException;
 	
 	// Aggiunge un like a un dato
-	public void insertLike(String friend, E data) throws NullPointerException, WrongPasswordException, AlreadyLikedException, FriendNotExistsException, CategoryNotPresentException, CloneNotSupportedException;
+	public void insertLike(String friend, E data) throws NullPointerException, WrongPasswordException, AlreadyLikedException, FriendNotExistsException, CategoryNotPresentException, CloneNotSupportedException, DataNotPresentException;
 	
 	// Legge un dato condiviso
 	// restituisce un iteratore (senza remove) che genera tutti i dati in

@@ -116,40 +116,84 @@ public class Board2<E extends MyData> implements DataBoard<E> {
 			throw new NullPointerException();
 		if(passw != this.password)
 			throw new WrongPasswordException("Password errata.");
-		return (E) dato.clone();		
+		int i = dati.get(dato.getCategory()).indexOf(dato);
+		if(i==-1)
+			throw new DataNotPresentException("Il dato non è presente in bacheca");
+		return (E) dati.get(dato.getCategory()).get(i).clone();
 	}
 
 	@Override
 	public E remove(String passw, E dato)
 			throws NullPointerException, WrongPasswordException, DataNotPresentException, CloneNotSupportedException {
-		// TODO Auto-generated method stub
-		return null;
+		if(passw == null || dato == null)
+			throw new NullPointerException();
+		if(passw != this.password)
+			throw new WrongPasswordException();
+		int i = dati.get(dato.getCategory()).indexOf(dato);
+		if(i==-1)
+			throw new DataNotPresentException("Il dato non è presente in bacheca");
+		ArrayList<E> removeDataList = dati.get(dato.getCategory());
+		removeDataList.remove(dato);
+		dati.put(dato.getCategory(), removeDataList);
+		return dato;
 	}
 
 	@Override
 	public List<E> getDataCategory(String passw, String category) throws NullPointerException, WrongPasswordException,
 			CategoryNotPresentException, CloneNotSupportedException {
-		// TODO Auto-generated method stub
-		return null;
+		if(passw == null || category == null)
+			throw new NullPointerException();
+		if(passw != this.password)
+			throw new WrongPasswordException();
+		ArrayList<E> categoryDataList = dati.get(category);
+		return categoryDataList;
 	}
 
 	@Override
 	public Iterator<E> getIterator(String passw) throws NullPointerException, WrongPasswordException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void insertLike(String friend, E data) throws NullPointerException, WrongPasswordException,
-			AlreadyLikedException, FriendNotExistsException, CategoryNotPresentException, CloneNotSupportedException {
-		// TODO Auto-generated method stub
+		if(passw == null)
+			throw new NullPointerException();
+		if(passw != this.password)
+			throw new WrongPasswordException();
+		ArrayList<E> dataList= new ArrayList<E>();
+		for(String cat: dati.keySet())
+		{
+			dataList.addAll(dati.get(cat));
+		}
+		Collections.sort(dataList, new SortByLike() );//ordino i dati per numero di like
+		return Collections.unmodifiableList(dataList).iterator();
 		
 	}
 
 	@Override
+	public void insertLike(String friend, E data) throws NullPointerException, WrongPasswordException,
+			AlreadyLikedException, FriendNotExistsException, CategoryNotPresentException, CloneNotSupportedException, DataNotPresentException {
+		if(friend == null || data==null)
+			throw new NullPointerException();
+		String catData = data.getCategory();
+		ArrayList<E> dataLikeList = dati.get(catData);
+		for(E dato: dataLikeList)//scorro la lista dei dati in quella categoria
+			if(dato.equals(data)) {
+				dato.addLike(friend);//aggiungo il like al dato
+				break;
+			}
+		dati.put(catData, dataLikeList);//aggiorno
+	}
+
+	@Override
 	public Iterator<E> getFriendIterator(String friend) throws NullPointerException, CloneNotSupportedException {
-		// TODO Auto-generated method stub
-		return null;
+		if(friend == null)
+			throw new NullPointerException();
+		ArrayList<E> dataFriendsList = new ArrayList<E>();
+		for(String cat: friends.keySet())
+		{
+			if(friends.get(cat).contains(friend))
+				dataFriendsList.addAll(dati.get(cat));
+		}
+		return Collections.unmodifiableList(dataFriendsList).iterator();
 	}
 
 }
+
+
+
