@@ -12,9 +12,9 @@ public class Board<E extends MyData> implements DataBoard<E> {
 	/*
 	 * Overview:
 	 * 
-	 * IR: username != null && recordData != null && categories != null && friends != null 
+	 * IR: username != null && recordData != null && categories != null
 	 * 	   && password != null
-	 * 	   && categories does not contains duplicates && friends does not contains duplicates
+	 * 	   && categories does not contains duplicates 
 	 * 	   && friends is ordered 
 	 *     
 	 */

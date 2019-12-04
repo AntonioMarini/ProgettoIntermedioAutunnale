@@ -19,6 +19,11 @@ public class Board2<E extends MyData> implements DataBoard<E> {
 	 * 					  , {<category1, {friend1, ..., friendn}>, ... , <categoryn, {friend1, ..., friendn}>}
 	 * 					  , password
 	 * 					>
+	 * 
+	 *  IR: dati != null && friends != null
+	 * 	   && password != null
+	 * 	   && dati does not contains duplicates && friends does not contains duplicates
+	 * 	   && friends è ordinato lessicograficamente
 	 */
 	
 	private HashMap<String,ArrayList<E>> dati;  //coppia <categoria, dati in quella categoria>
