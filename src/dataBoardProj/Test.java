@@ -28,6 +28,9 @@ public class Test {
 		MyData f = new MyData("DragonBall Z: Budokai Tenkaichi 3");
 		MyData g = new MyData("Uncharted 4");
 		MyData h = new MyData("Death Stranding");
+		MyData i = new MyData("Tekken 3");
+		
+		System.out.println("*****************OUTPUT DI BOARD *******************");		
 		
 		//CREAZIONE CATEGORIE
 		try {
@@ -55,10 +58,9 @@ public class Test {
 	    try {
 			games.addFriend("Azione", "1234", "Giuseppe");
 			games.addFriend("Azione", "1234", "Martina");
-			games.addFriend("RPG", "1234", "Giovanni");
 			games.addFriend("Picchiaduro", "1234", "Daniele");
 			games.addFriend("Avventura", "1234", "Salvatore");
-			games.removeFriend("RPG", "1234", "Giovanni");
+            games.removeFriend("Avventura", "1234", "Salvatore");
 		} catch (WrongPasswordException | NoDuplicatesException | CategoryNotPresentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -76,9 +78,9 @@ public class Test {
 			games.put("1234", "Picchiaduro", f );
 			games.put("1234", "Avventura", g );
 			games.put("1234", "Avventura", h );
-			
-			games.remove("1234", h);
-			games.put("1234", "Avventura", h );
+			games.put("1234", "Picchiaduro", i );
+			games.remove("1234", h);			//posso rimuovere un dato da una categoria e rimetterlo in un'altra
+			games.put("1234", "Azione", h );
 			//games.get("1234", a).display();
 		} catch (NullPointerException | WrongPasswordException | CategoryNotPresentException
 				| NoDuplicatesException | DataNotPresentException e) {
@@ -89,8 +91,8 @@ public class Test {
 	    //PROVO getDataCategory()
 	    try {
 			ArrayList<MyData> listAdventure = (ArrayList<MyData>) games.getDataCategory("1234", "Avventura");
-			for(MyData dato : listAdventure)
-				dato.display();
+			//for(MyData dato : listAdventure)
+			//	dato.display();
 			
 		} catch (NullPointerException | WrongPasswordException | CategoryNotPresentException e) {
 			// TODO Auto-generated catch block
@@ -98,7 +100,8 @@ public class Test {
 		}
 		
 		//TEST SECONDA IMPLEMENTAZIONE
-		
+	    
+	    System.out.println("*****************OUTPUT DI BOARD 2******************");		
 		password ="1234";
 		Board2<MyData> games2 = new Board2<MyData>(password);
 		
@@ -110,6 +113,7 @@ public class Test {
 				MyData f2 = new MyData("DragonBall Z: Budokai Tenkaichi 3");
 				MyData g2 = new MyData("Uncharted 4");
 				MyData h2 = new MyData("Death Stranding");
+				MyData i2 = new MyData("Tekken 3");
 		
 		//CREAZIONE CATEGORIE
 		try {
@@ -136,7 +140,7 @@ public class Test {
 		//AGGIUNGO E RIMUOVO AMICI
 	    try {
 			games2.addFriend("Azione", "1234", "Giuseppe");
-			games2.addFriend("Azione", "1234", "Martina");
+			games2.addFriend("Picchiaduro", "1234", "Martina");
 			games2.addFriend("RPG", "1234", "Giovanni");
 			games2.addFriend("Picchiaduro", "1234", "Daniele");
 			games2.addFriend("Avventura", "1234", "Salvatore");
@@ -175,13 +179,35 @@ public class Test {
 	    //PROVO getDataCategory()
 	    try {
 			ArrayList<MyData> listAdventure = (ArrayList<MyData>) games2.getDataCategory("1234", "Avventura");
-			for(MyData dato : listAdventure)
-				dato.display();
+			//for(MyData dato : listAdventure)
+			//	dato.display();
 			
 		} catch (NullPointerException | WrongPasswordException | CategoryNotPresentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	    		
+	        try {
+	        	games2.insertLike("Gianni", a2);
+				Iterator<MyData> it = games2.getIterator("1234");
+				while(it.hasNext())
+					it.next().display();
+			} catch (NullPointerException | WrongPasswordException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (AlreadyLikedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FriendNotExistsException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (CategoryNotPresentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (DataNotPresentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	    
 	    
 	}

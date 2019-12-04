@@ -337,7 +337,7 @@ class SortByLike implements Comparator<MyData>
 { 
     public int compare(MyData a, MyData b) 
     { 
-        return a.getLikes() - b.getLikes(); 
+        return b.getLikes() - a.getLikes(); 
     } 
 } 
 
