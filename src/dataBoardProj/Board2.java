@@ -12,6 +12,15 @@ import dataBoardProjExceptions.WrongPasswordException;
 
 public class Board2<E extends MyData> implements DataBoard<E> {
 	
+	/*
+	 * @overview:			Board2 contiene oggetti generici E che estendono MyData, e ha vari metodi accessibili all utente tramite una password
+	 * typical element: <
+	 * 						{<category1, {data1, ..., datan}>    , ... , <categoryn, {data1, ..., datan}>    } 
+	 * 					  , {<category1, {friend1, ..., friendn}>, ... , <categoryn, {friend1, ..., friendn}>}
+	 * 					  , password
+	 * 					>
+	 */
+	
 	private HashMap<String,ArrayList<E>> dati;  //coppia <categoria, dati in quella categoria>
 	private String password;
 	private HashMap<String,ArrayList<String>> friends;  //coppia <categoria, amici di quella categoria>
