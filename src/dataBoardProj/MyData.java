@@ -9,8 +9,9 @@ import java.util.ArrayList;
 
 public class MyData implements Data, Cloneable, Comparable<Object>{
 	/*
-	 * IR: c.data != null && c.categoria != null && c.likes >= 0  
-	 * 
+	 * IR: c.data != null && c.categoria != null && c.likes >= 0  && addedLikes has no duplicates
+	 * Typical Element:
+	 * 		<data, categoria, likes, {friend1, ..., friendn}>
 	 */
 	
 	private String data; //contenuto
@@ -42,29 +43,38 @@ public class MyData implements Data, Cloneable, Comparable<Object>{
 
 
 	@Override
+	/*stampa il dato a schermo*/
 	public void display() {
-		/*
-		 * @requires: ogg != null 
-		 */
+		
 		String li = Integer.toString(likes);
         System.out.println("\nDato : "+ data.toString() +"\nLikes: "+ li +"\nCategory: " + categoria );
 	}
 
+	/*restituisce la categoria del dato*/
 	@Override
 	public String getCategory() throws CloneNotSupportedException {
        return this.categoria;
 	}
 	
+	/*restituisce i like del dato*/
 	public int getLikes() {
 		return this.likes;
 	}
 
 	@Override
+	/*friend aggiunge like al dato solo se non lo ha gia messo in precedenza*/
 	public void addLike(String friend) throws AlreadyLikedException{
+		/*
+		 * REQUIRES: addedLikes non contiene friend
+		 * THROWS:   se friend è presente in addedLikes lancia AlreadyLikedException
+		 * MODIFIES: this.likes, this.addedlikes
+		 * EFFECTS:  this.likes_post = this.likes_pre + 1
+		 * 			 this.addedLikes_post = this.addedLikes_pre U friend
+		 * */
 		if(!this.addedLikes.contains(friend))
 		{
-			 this.likes++;
-			 addedLikes.add(friend);
+			 this.likes++;			//aggiungo il like..
+			 addedLikes.add(friend);//..e aggiungo friend alla lista di amici che hanno gia messo like
 		}
 		else
 		{

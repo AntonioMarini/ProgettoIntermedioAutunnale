@@ -30,6 +30,7 @@ public class Board2<E extends MyData> implements DataBoard<E> {
 	private String password;
 	private HashMap<String,ArrayList<String>> friends;  //coppia <categoria, amici di quella categoria>
 	
+	/*costruttore di Board2*/
 	public Board2(String passw) throws NullPointerException{
 		/*
 		 * @requires: passw != null
@@ -46,12 +47,14 @@ public class Board2<E extends MyData> implements DataBoard<E> {
 		
 	}
 	
+	/*crea una nuova categoria e la aggiungo a dati e friends*/
 	@Override
 	public void createCategory(String category, String passw) throws WrongPasswordException , NullPointerException, NoDuplicatesException {
 		/*
 		 * @requires:	category != null && passw != null && passw == this.password
 		 * @throw:		se category != null || passw != null lancia NullPointerException(Unchecked)
 		 * 				se passw != this.password 			 lancia WrongPasswordException(Checked)
+		 * 				se friends o dati contengono già category lancia NoduplicatesException()
 		 * @modifies:	this.dati, this.friends
 		 * @effects:	this.dati_post = this.dati_pre U {category}
 		 * 				this.friends_post = this.friends_pre U {category}
@@ -70,6 +73,7 @@ public class Board2<E extends MyData> implements DataBoard<E> {
 		else throw new WrongPasswordException("Password sbagliata.");
 	}
 
+	/*rimuove la categoria dalla board */
 	@Override
 	public void removeCategory(String category, String passw) throws WrongPasswordException, NullPointerException,
 			CategoryNotPresentException,  CloneNotSupportedException {
@@ -95,6 +99,7 @@ public class Board2<E extends MyData> implements DataBoard<E> {
 		else throw new WrongPasswordException("Password sbagliata.");
 	}
 
+	/*aggiunge alla lista di accesso della categoria un nuovo amico*/
 	@Override
 	public void addFriend(String category, String passw, String friend)
 	throws WrongPasswordException, NoDuplicatesException, CategoryNotPresentException {
@@ -120,6 +125,7 @@ public class Board2<E extends MyData> implements DataBoard<E> {
 		this.friends.put(category, updateFriend);
 	}
 
+	/*rimuove dalla lista di accesso della categoria l'amico*/
 	@Override
 	public void removeFriend(String category, String passw, String friend)
 			throws WrongPasswordException, FriendNotExistsException, NotRemovableException {
@@ -144,6 +150,7 @@ public class Board2<E extends MyData> implements DataBoard<E> {
 		this.friends.put(category, removeFriend);
 	}
 
+	/*aggiunge il dato in bacheca*/
 	@Override
 	public boolean put(String passw, String categoria, E dato) throws NullPointerException, WrongPasswordException,
 			CategoryNotPresentException, NoDuplicatesException, CloneNotSupportedException {
@@ -178,10 +185,18 @@ public class Board2<E extends MyData> implements DataBoard<E> {
 		}
 	}
 
+	/*restituisce una deep copy del dato in bacheca*/
 	@SuppressWarnings("unchecked")
 	@Override
 	public E get(String passw, E dato)
 			throws NullPointerException, WrongPasswordException, DataNotPresentException, CloneNotSupportedException {
+		/*
+		 * @requires: passw != null && dato != null && passw == this.password 
+		 * @throw:	  se dato == null || passw == null 				  			  lancia NullPointerException(Unchecked)
+		 * 			  se passw != this.password 		   				  			  lancia WrongPasswordException(Checked)
+		 * 			  se dato non è presente in dati						 lancia DataNotPresentException(Checked)
+		 * 
+		 */
 		if( passw == null || dato == null)
 			throw new NullPointerException();
 		if(passw != this.password)
@@ -192,6 +207,7 @@ public class Board2<E extends MyData> implements DataBoard<E> {
 		return (E) dati.get(dato.getCategory()).get(i).clone();
 	}
 
+	/*rimuove e restituisce il dato dalla bacheca*/
 	@Override
 	public E remove(String passw, E dato)
 			throws NullPointerException, WrongPasswordException, DataNotPresentException, CloneNotSupportedException {
@@ -219,6 +235,7 @@ public class Board2<E extends MyData> implements DataBoard<E> {
 	}
 
 	@Override
+	/*restituisce la lista di dati relativa a una categoria*/
 	public List<E> getDataCategory(String passw, String category) throws NullPointerException, WrongPasswordException,
 			CategoryNotPresentException, CloneNotSupportedException {
 		/*
@@ -236,6 +253,7 @@ public class Board2<E extends MyData> implements DataBoard<E> {
 		return categoryDataList;
 	}
 
+	/*restituisce un iteratore della lista di tutti i dati presenti in bacheca*/
 	@Override
 	public Iterator<E> getIterator(String passw) throws NullPointerException, WrongPasswordException {
 		/*
@@ -259,8 +277,19 @@ public class Board2<E extends MyData> implements DataBoard<E> {
 	}
 
 	@Override
+	/*friend se ha accesso al dato in bacheca mette like*/
 	public void insertLike(String friend, E data) throws NullPointerException, WrongPasswordException,
 			AlreadyLikedException, FriendNotExistsException, CategoryNotPresentException, CloneNotSupportedException, DataNotPresentException {
+		/*
+		 * REQUIRES: friend != null && data != null
+		 * 			 && friend is in this.friends(data.category).friendlist && category is in this.dati 
+		 * 			&& category is inthis.friends
+		 * THROWS:	se friend == null || data == null 				  			  lancia NullPointerException(Unchecked)
+		 * 		
+		 * MODIFIES:  vedi MyData.addLike()
+		 * EFFECTS:  
+		 * 
+		 * */
 		if(friend == null || data==null)
 			throw new NullPointerException();
 		String catData = data.getCategory();
@@ -274,7 +303,12 @@ public class Board2<E extends MyData> implements DataBoard<E> {
 	}
 
 	@Override
+	/*restituisce l'iteratore alla lista di dati in bacheca a cui ha accesso friend*/
 	public Iterator<E> getFriendIterator(String friend) throws NullPointerException, CloneNotSupportedException {
+		/*
+		 * REQUIRES: friend != null 
+		 * THROWS  : se friend == null lancia NUllPointerException ()
+		 */
 		if(friend == null)
 			throw new NullPointerException();
 		ArrayList<E> dataFriendsList = new ArrayList<E>();

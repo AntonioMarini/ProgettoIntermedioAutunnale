@@ -4,7 +4,8 @@ import dataBoardProjExceptions.AlreadyLikedException;
 
 public interface Data {
 	/* @overview: 
-	 *  dato generico che ha un metodo display() e la categoria del dato
+	 *  dato generico che ha un metodo display(), la categoria del dato
+	 *  
 	 * 
 	 */
 	
@@ -18,13 +19,10 @@ public interface Data {
     public String getCategory() throws CloneNotSupportedException;
     
     //incrementa il contatore dei like
+    /*
+     *
+     */
     public void addLike(String friend) throws AlreadyLikedException;
     
-    //ALTRI METODI DA AGGIUNGERE QUI: 
-    
-    
-    
-    //crea una copia di una lista di Stringhe
-    //public List<String> cloneList(List<String> toCopyList) throws NullPointerException;
 
 }

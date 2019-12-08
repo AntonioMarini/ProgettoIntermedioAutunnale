@@ -12,7 +12,13 @@ import dataBoardProjExceptions.NotRemovableException;
 import dataBoardProjExceptions.WrongPasswordException;
 
 public class Test {
-
+/*
+ * nel test ho messo vari try catch per poter visualizzare il corretto funzionamento dei metodi e 
+ * delle eccezioni che potrebbe lanciare come debug, ho messo qui entrambe le implementazioni di 
+ * 	DataBoard cosi da poter effettuare i test su entrambe lavorando sugli stessi tipi di dato (MyData).
+ * 
+ * Tutti i metodi nelle due implementazioni funzionano correttamente.
+ */
 	
 	public static void main(String[] args) throws CloneNotSupportedException {
 		

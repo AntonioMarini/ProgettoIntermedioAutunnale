@@ -16,6 +16,8 @@ public class Board<E extends MyData> implements DataBoard<E> {
 	 * 	   && password != null
 	 * 	   && categories does not contains duplicates 
 	 * 	   && friends is ordered 
+	 * 
+	 * Typica Element: <username, password, {data1, data2, ..., datan}, {category1, category2, ..., categoryn}
 	 *     
 	 */
 	
